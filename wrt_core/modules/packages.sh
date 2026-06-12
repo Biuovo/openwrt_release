@@ -14,9 +14,6 @@ remove_unwanted_packages() {
         "chinadns-ng" "ipt2socks" "tcping" "trojan-plus" "simple-obfs" "shadowsocksr-libev"
         "dae" "daed" "mihomo" "geoview" "open-app-filter" "msd_lite"
     )
-    local packages_utils=(
-        "cups"
-    )
     for pkg in "${luci_packages[@]}"; do
         if [[ -d ./feeds/luci/applications/$pkg ]]; then
             \rm -rf ./feeds/luci/applications/$pkg
@@ -158,7 +155,7 @@ install_custom_feed() {
         msd_lite luci-app-msd_lite
     )
     local required_feed_dirs=(
-        cups tcping v2ray-geodata luci-lib-taskd luci-app-openclash
+        tcping v2ray-geodata luci-lib-taskd luci-app-openclash
         luci-app-quickstart luci-app-store luci-app-homeproxy luci-app-mosdns
         luci-app-passwall nikki luci-app-nikki mihomo-meta
         open-app-filter luci-app-oaf lucky luci-app-lucky luci-app-easytier

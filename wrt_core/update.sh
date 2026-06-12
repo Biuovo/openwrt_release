@@ -33,7 +33,6 @@ source "$SCRIPT_DIR/modules/general.sh"
 source "$SCRIPT_DIR/modules/feeds.sh"
 source "$SCRIPT_DIR/modules/packages.sh"
 source "$SCRIPT_DIR/modules/system.sh"
-source "$SCRIPT_DIR/modules/cups.sh"
 source "$SCRIPT_DIR/modules/docker.sh"
 
 
@@ -94,7 +93,6 @@ main() {
     install_feeds
     verify_custom_feed_installed_paths
     docker_stack_sync_nftables_compat "$BUILD_DIR" "0"
-    fix_cups_libcups_avahi_depends
     fix_easytier_lua
     update_adguardhome
     update_script_priority
