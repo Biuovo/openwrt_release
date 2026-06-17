@@ -80,6 +80,28 @@ jobs:
                 find "$dir" -type f -exec touch {} +
             done
           fi
+      
+      - name: Clean Build Cache Before Build
+        run: |
+          echo "========== Pre-build Disk Check =========="
+          df -hT /
+          echo "=========================================="
+          
+          # 清理Docker
+          docker rmi $(docker images -q) 2>/dev/null || true
+          
+          # 清理系统缓存
+          sudo rm -rf /usr/share/dotnet || true
+          sudo rm -rf /usr/local/lib/android || true
+          sudo rm -rf /opt/ghc || true
+          
+          # 清理APT缓存
+          sudo apt-get clean || true
+          sudo apt-get autoclean || true
+          
+          echo "========== Post-cleanup Disk Space =========="
+          df -hT /
+          echo "=========================================="
 
       - name: Machine Information (Pre-build)
         run: |
