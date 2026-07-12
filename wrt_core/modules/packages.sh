@@ -152,7 +152,6 @@ install_custom_feed() {
         luci-app-quickstart luci-app-istorex luci-app-cloudflarespeedtest netdata luci-app-netdata \
         lucky luci-app-lucky luci-app-openclash luci-app-homeproxy luci-app-amlogic \
         oaf open-app-filter luci-app-oaf easytier luci-app-easytier \
-        frpc luci-app-frpc \
         msd_lite luci-app-msd_lite
     )
     local required_feed_dirs=(
@@ -197,6 +196,10 @@ install_custom_feed() {
         rm -rf "$custom_feed_dir"
     fi
     mkdir -p "$custom_feed_dir"
+
+    echo "正在添加 frpc / luci-app-frpc..."
+    git_retry clone --depth 1 https://github.com/kuoruan/openwrt-frp.git "$custom_feed_dir/frp"
+    git_retry clone --depth 1 https://github.com/kuoruan/luci-app-frpc.git "$custom_feed_dir/luci-app-frpc"
 
     for source_entry in "${custom_feed_sources[@]}"; do
         IFS='|' read -r repo_label repo_url repo_branch repo_packages <<< "$source_entry"
