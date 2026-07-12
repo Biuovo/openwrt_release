@@ -183,7 +183,7 @@ install_custom_feed() {
         "Openwrt-Passwall/openwrt-passwall|https://github.com/Openwrt-Passwall/openwrt-passwall.git|main|luci-app-passwall"
         "nikkinikki-org/OpenWrt-nikki|https://github.com/nikkinikki-org/OpenWrt-nikki.git|main|nikki luci-app-nikki mihomo-meta"
         "nikkinikki-org/OpenWrt-momo|https://github.com/nikkinikki-org/OpenWrt-momo.git|main|momo luci-app-momo"
-        "tokisaki-galaxy/luci-app-tailscale-community|https://github.com/tokisaki-galaxy/luci-app-tailscale-community.git|main|luci-app-tailscale-community"
+        "tokisaki-galaxy/luci-app-tailscale-community|https://github.com/tokisaki-galaxy/luci-app-tailscale-community.git|master|luci-app-tailscale-community"
     )
 
     feeds_path=$(get_feeds_path)
