@@ -228,6 +228,14 @@ fi
 
 "$BASE_PATH/update.sh" "$REPO_URL" "$REPO_BRANCH" "$BUILD_DIR" "$COMMIT_HASH"
 
+if [[ "$Dev" == "jdcloud_ipq60xx_immwrt" ]]; then
+    mkdir -p "$BASE_PATH/../$BUILD_DIR/package/base-files/files/etc/sysctl.d"
+    printf '%s\n' \
+        'net.ipv4.tcp_congestion_control=bbr' \
+        'net.core.default_qdisc=fq' \
+        > "$BASE_PATH/../$BUILD_DIR/package/base-files/files/etc/sysctl.d/99-bbr-fq.conf"
+fi
+
 apply_config
 remove_uhttpd_dependency
 replace_banner
