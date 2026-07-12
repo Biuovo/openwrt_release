@@ -29,6 +29,7 @@ jobs:
           'jdcloud_ipq60xx_immwrt', 
           'jdcloud_ipq60xx_libwrt',
           'link_nn6000v2_immwrt',
+          'r76s_immwrt',
           'x64_immwrt'
         ]
     runs-on: ${{ matrix.os }}
@@ -196,7 +197,7 @@ jobs:
           cat > release_body_${{ matrix.model }}.txt <<EOF
           **This is 🚀 Cloud Build OpenWrt Firmware for ${{ matrix.model }}**
             - 📦 Kernel: ${{ env.KVER }}
-            - 🔧 LAN IP: 10.0.0.1
+            - 🔧 LAN IP: 192.168.100.1
             - 📶 WIFI Password: 12345678
 
           🧩 Installed Plugins:

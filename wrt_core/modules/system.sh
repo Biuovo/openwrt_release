@@ -82,11 +82,21 @@ remove_something_nss_kmod() {
 
 update_affinity_script() {
     local affinity_script_dir="$BUILD_DIR/target/linux/qualcommax"
+    local r76s_hotplug_dir="$BUILD_DIR/target/linux/rockchip/armv8/base-files/etc/hotplug.d/net"
 
     if [ -d "$affinity_script_dir" ]; then
         find "$affinity_script_dir" -name "set-irq-affinity" -exec rm -f {} \;
         find "$affinity_script_dir" -name "smp_affinity" -exec rm -f {} \;
         install -Dm755 "$BASE_PATH/patches/smp_affinity" "$affinity_script_dir/base-files/etc/init.d/smp_affinity"
+    fi
+
+    if [ -d "$BUILD_DIR/target/linux/rockchip/armv8" ]; then
+        if curl_retry -fsSL -o /tmp/001-r76s-packet-steering.patch https://raw.githubusercontent.com/sbwml/r4s_build_script/master/openwrt/patch/netifd/001-hack-packet_steering-for-nanopi-r76s.patch; then
+            (cd "$BUILD_DIR" && patch -p1 < /tmp/001-r76s-packet-steering.patch) || true
+        fi
+        if [ -f "$BASE_PATH/patches/r76s/40-net-smp-affinity" ]; then
+            install -Dm755 "$BASE_PATH/patches/r76s/40-net-smp-affinity" "$r76s_hotplug_dir/40-net-smp-affinity"
+        fi
     fi
 }
 
