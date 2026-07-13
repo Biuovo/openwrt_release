@@ -444,25 +444,18 @@ update_smartdns() {
 
 update_diskman() {
     local path="$BUILD_DIR/feeds/luci/applications/luci-app-diskman"
-    local repo_url="https://github.com/lisaac/luci-app-diskman.git"
-    if [ -d "$path" ]; then
+    local repo_url="https://github.com/sbwml/luci-app-diskman.git"
+    if [ -d "$(dirname "$path")" ]; then
         echo "正在更新 diskman..."
         cd "$BUILD_DIR/feeds/luci/applications" || return
-        \rm -rf "luci-app-diskman"
+        \rm -rf "luci-app-diskman" diskman
 
-        if ! git_retry clone --filter=blob:none --no-checkout "$repo_url" diskman; then
+        if ! git_retry clone --depth=1 "$repo_url" diskman; then
             echo "错误：从 $repo_url 克隆 diskman 仓库失败" >&2
             exit 1
         fi
-        cd diskman || return
 
-        git_retry sparse-checkout init --cone
-        git_retry sparse-checkout set applications/luci-app-diskman || return
-
-        git_retry checkout --quiet
-
-        mv applications/luci-app-diskman ../luci-app-diskman || return
-        cd .. || return
+        mv diskman/luci-app-diskman ./luci-app-diskman || return
         \rm -rf diskman
         cd "$BUILD_DIR"
 
