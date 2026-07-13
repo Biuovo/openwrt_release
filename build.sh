@@ -265,7 +265,21 @@ make -j$(($(nproc) + 1)) || make -j1 V=s
 FIRMWARE_DIR="$BASE_PATH/../firmware"
 \rm -rf "$FIRMWARE_DIR"
 mkdir -p "$FIRMWARE_DIR"
-find "$TARGET_DIR" -type f \( -name "*.bin" -o -name "*.manifest" -o -name "*efi.img.gz" -o -name "*.itb" -o -name "*.fip" -o -name "*.ubi" -o -name "*rootfs.tar.gz" \) -exec cp -f {} "$FIRMWARE_DIR/" \;
+copy_firmware_artifacts() {
+    case "$Dev" in
+        x64_immwrt)
+            find "$TARGET_DIR" -type f \( -name "*squashfs-combined-efi.img.gz" -o -name "*.manifest" \) -exec cp -f {} "$FIRMWARE_DIR/" \;
+            ;;
+        r76s_immwrt)
+            find "$TARGET_DIR" -type f \( -name "*squashfs-*.img.gz" -o -name "*.manifest" \) -exec cp -f {} "$FIRMWARE_DIR/" \;
+            ;;
+        *)
+            find "$TARGET_DIR" -type f \( -name "*.bin" -o -name "*.manifest" -o -name "*efi.img.gz" -o -name "*.itb" -o -name "*.fip" -o -name "*.ubi" -o -name "*rootfs.tar.gz" \) -exec cp -f {} "$FIRMWARE_DIR/" \;
+            ;;
+    esac
+}
+
+copy_firmware_artifacts
 \rm -f "$BASE_PATH/../firmware/Packages.manifest" 2>/dev/null
 
 if [[ -d action_build ]]; then
