@@ -158,7 +158,7 @@ install_custom_feed() {
         tcping v2ray-geodata luci-lib-taskd luci-app-openclash
         luci-app-quickstart luci-app-store luci-app-homeproxy luci-app-mosdns
         luci-app-passwall nikki luci-app-nikki mihomo-meta
-        momo luci-app-momo
+        momo luci-app-momo luci-app-tailscale-community
         open-app-filter luci-app-oaf lucky luci-app-lucky luci-app-easytier
     )
     local custom_feed_sources=()
@@ -183,6 +183,7 @@ install_custom_feed() {
         "Openwrt-Passwall/openwrt-passwall|https://github.com/Openwrt-Passwall/openwrt-passwall.git|main|luci-app-passwall"
         "nikkinikki-org/OpenWrt-nikki|https://github.com/nikkinikki-org/OpenWrt-nikki.git|main|nikki luci-app-nikki mihomo-meta"
         "nikkinikki-org/OpenWrt-momo|https://github.com/nikkinikki-org/OpenWrt-momo.git|main|momo luci-app-momo"
+        "tokisaki-galaxy/luci-app-tailscale-community|https://github.com/tokisaki-galaxy/luci-app-tailscale-community.git|master|luci-app-tailscale-community"
     )
 
     feeds_path=$(get_feeds_path)
@@ -232,7 +233,7 @@ verify_custom_feed_installed_paths() {
     local required_package_dirs=(
         luci-app-adguardhome luci-app-mosdns v2ray-geodata luci-app-easytier
         luci-app-passwall nikki luci-app-nikki mihomo-meta
-        momo luci-app-momo
+        momo luci-app-momo luci-app-tailscale-community
     )
     local missing_package_dirs=()
 
