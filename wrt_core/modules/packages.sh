@@ -158,7 +158,7 @@ install_custom_feed() {
         tcping v2ray-geodata luci-lib-taskd luci-app-openclash
         luci-app-quickstart luci-app-store luci-app-homeproxy luci-app-mosdns
         luci-app-passwall nikki luci-app-nikki mihomo-meta
-        momo luci-app-momo luci-app-tailscale-community
+        momo luci-app-momo
         open-app-filter luci-app-oaf lucky luci-app-lucky luci-app-easytier
     )
     local custom_feed_sources=()
@@ -183,7 +183,6 @@ install_custom_feed() {
         "Openwrt-Passwall/openwrt-passwall|https://github.com/Openwrt-Passwall/openwrt-passwall.git|main|luci-app-passwall"
         "nikkinikki-org/OpenWrt-nikki|https://github.com/nikkinikki-org/OpenWrt-nikki.git|main|nikki luci-app-nikki mihomo-meta"
         "nikkinikki-org/OpenWrt-momo|https://github.com/nikkinikki-org/OpenWrt-momo.git|main|momo luci-app-momo"
-        "tokisaki-galaxy/luci-app-tailscale-community|https://github.com/tokisaki-galaxy/luci-app-tailscale-community.git|master|luci-app-tailscale-community"
     )
 
     feeds_path=$(get_feeds_path)
@@ -200,6 +199,13 @@ install_custom_feed() {
     echo "正在添加 frpc / luci-app-frpc..."
     git_retry clone --depth 1 https://github.com/kuoruan/openwrt-frp.git "$custom_feed_dir/frp"
     git_retry clone --depth 1 https://github.com/kuoruan/luci-app-frpc.git "$custom_feed_dir/luci-app-frpc"
+
+    echo "正在添加 luci-app-tailscale-community..."
+    mkdir -p "$BUILD_DIR/package/custom"
+    rm -rf "$BUILD_DIR/package/custom/luci-app-tailscale-community" /tmp/luci-app-tailscale-community
+    git_retry clone --depth 1 -b master https://github.com/tokisaki-galaxy/luci-app-tailscale-community.git /tmp/luci-app-tailscale-community
+    mv /tmp/luci-app-tailscale-community/luci-app-tailscale-community "$BUILD_DIR/package/custom/luci-app-tailscale-community"
+    rm -rf /tmp/luci-app-tailscale-community
 
     for source_entry in "${custom_feed_sources[@]}"; do
         IFS='|' read -r repo_label repo_url repo_branch repo_packages <<< "$source_entry"
@@ -233,7 +239,7 @@ verify_custom_feed_installed_paths() {
     local required_package_dirs=(
         luci-app-adguardhome luci-app-mosdns v2ray-geodata luci-app-easytier
         luci-app-passwall nikki luci-app-nikki mihomo-meta
-        momo luci-app-momo luci-app-tailscale-community
+        momo luci-app-momo
     )
     local missing_package_dirs=()
 
