@@ -228,7 +228,7 @@ fi
 
 "$BASE_PATH/update.sh" "$REPO_URL" "$REPO_BRANCH" "$BUILD_DIR" "$COMMIT_HASH"
 
-if [[ "$Dev" == "jdcloud_ipq60xx_immwrt" ]]; then
+if [[ "$Dev" == "jdcloud_ipq60xx_immwrt" || "$Dev" == "r76s_immwrt" ]]; then
     mkdir -p "$BASE_PATH/../$BUILD_DIR/package/base-files/files/etc/sysctl.d"
     printf '%s\n' \
         'net.ipv4.tcp_congestion_control=bbr' \
