@@ -226,7 +226,7 @@ if [[ -d action_build ]]; then
     BUILD_DIR="action_build"
 fi
 
-"$BASE_PATH/update.sh" "$REPO_URL" "$REPO_BRANCH" "$BUILD_DIR" "$COMMIT_HASH"
+"$BASE_PATH/update.sh" "$REPO_URL" "$REPO_BRANCH" "$BUILD_DIR" "$COMMIT_HASH" "$Dev"
 
 if [[ "$Dev" == "jdcloud_ipq60xx_immwrt" || "$Dev" == "r76s_immwrt" ]]; then
     mkdir -p "$BASE_PATH/../$BUILD_DIR/package/base-files/files/etc/sysctl.d"

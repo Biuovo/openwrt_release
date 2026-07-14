@@ -5,15 +5,25 @@ remove_unwanted_packages() {
         "luci-app-passwall" "luci-app-ddns-go" "luci-app-rclone" "luci-app-ssr-plus"
         "luci-app-vssr" "luci-app-daed" "luci-app-dae" "luci-app-alist" "luci-app-homeproxy"
         "luci-app-haproxy-tcp" "luci-app-openclash" "luci-app-mihomo" "luci-app-appfilter"
-        "luci-app-msd_lite" "luci-app-unblockneteasemusic" "luci-app-adguardhome"
+        "luci-app-msd_lite" "luci-app-unblockneteasemusic"
     )
     local packages_net=(
         "haproxy" "xray-core" "xray-plugin" "dns2socks" "alist" "hysteria"
-        "mosdns" "adguardhome" "ddns-go" "naiveproxy" "shadowsocks-rust"
-        "sing-box" "v2ray-core" "v2ray-geodata" "v2ray-plugin" "tuic-client"
+        "mosdns" "ddns-go" "naiveproxy" "shadowsocks-rust"
+        "v2ray-core" "v2ray-geodata" "v2ray-plugin" "tuic-client"
         "chinadns-ng" "ipt2socks" "tcping" "trojan-plus" "simple-obfs" "shadowsocksr-libev"
         "dae" "daed" "mihomo" "geoview" "open-app-filter" "msd_lite"
     )
+
+    case "$BUILD_MODEL" in
+        r76s_immwrt|x64_immwrt)
+            # Keep official adguardhome and sing-box; sbwml LuCI packages depend on them.
+            ;;
+        *)
+            luci_packages+=("luci-app-adguardhome")
+            packages_net+=("adguardhome" "sing-box")
+            ;;
+    esac
     for pkg in "${luci_packages[@]}"; do
         if [[ -d ./feeds/luci/applications/$pkg ]]; then
             \rm -rf ./feeds/luci/applications/$pkg
@@ -143,25 +153,8 @@ install_custom_feed() {
     local custom_feed_worktree_dir
     local custom_feed_name
 
-    local base_custom_feed_packages=(
-        xray-core xray-plugin dns2tcp dns2socks haproxy hysteria \
-        naiveproxy shadowsocks-rust sing-box v2ray-core v2ray-geodata geoview v2ray-plugin \
-        tuic-client chinadns-ng ipt2socks tcping trojan-plus simple-obfs shadowsocksr-libev \
-        v2dat adguardhome luci-app-adguardhome ddns-go \
-        luci-app-ddns-go taskd luci-lib-xterm luci-lib-taskd luci-app-store quickstart \
-        luci-app-quickstart luci-app-istorex luci-app-cloudflarespeedtest netdata luci-app-netdata \
-        lucky luci-app-lucky luci-app-openclash luci-app-homeproxy luci-app-amlogic \
-        oaf open-app-filter luci-app-oaf easytier luci-app-easytier \
-        msd_lite luci-app-msd_lite
-    )
-    local required_feed_dirs=(
-        tcping v2ray-geodata luci-lib-taskd luci-app-openclash
-        luci-app-quickstart luci-app-store luci-app-homeproxy luci-app-mosdns
-        luci-app-passwall nikki luci-app-nikki mihomo-meta
-        momo luci-app-momo
-        luci-app-netspeedtest speedtest-cli
-        open-app-filter luci-app-oaf lucky luci-app-lucky luci-app-easytier
-    )
+    local base_custom_feed_packages=()
+    local required_feed_dirs=()
     local custom_feed_sources=()
     local missing_feed_dirs=()
     local source_entry
@@ -171,21 +164,58 @@ install_custom_feed() {
     local repo_packages
     local repo_package_array=()
 
-    if [ ! -d "$fullconenat_nft_dir" ]; then
-        base_custom_feed_packages+=(fullconenat-nft)
-    fi
-    if [ ! -d "$fullconenat_dir" ]; then
-        base_custom_feed_packages+=(fullconenat)
-    fi
-
-    custom_feed_sources=(
-        "kenzok8/small-package|https://github.com/kenzok8/small-package.git||${base_custom_feed_packages[*]}"
-        "sbwml/luci-app-mosdns|https://github.com/sbwml/luci-app-mosdns.git|v5|mosdns luci-app-mosdns"
-        "Openwrt-Passwall/openwrt-passwall|https://github.com/Openwrt-Passwall/openwrt-passwall.git|main|luci-app-passwall"
-        "nikkinikki-org/OpenWrt-nikki|https://github.com/nikkinikki-org/OpenWrt-nikki.git|main|nikki luci-app-nikki mihomo-meta"
-        "nikkinikki-org/OpenWrt-momo|https://github.com/nikkinikki-org/OpenWrt-momo.git|main|momo luci-app-momo"
-        "sbwml/openwrt_pkgs|https://github.com/sbwml/openwrt_pkgs.git|main|luci-app-netspeedtest speedtest-cli"
-    )
+    case "$BUILD_MODEL" in
+        r76s_immwrt|x64_immwrt)
+            required_feed_dirs=(
+                luci-app-adguardhome luci-app-netspeedtest speedtest-cli
+                luci-app-store luci-lib-taskd luci-lib-xterm taskd
+                luci-app-istorex luci-app-quickstart quickstart
+                nikki luci-app-nikki mihomo-meta momo luci-app-momo
+            )
+            custom_feed_sources=(
+                "sbwml/openwrt_pkgs|https://github.com/sbwml/openwrt_pkgs.git|main|luci-app-adguardhome luci-app-netspeedtest speedtest-cli"
+                "linkease/istore|https://github.com/linkease/istore.git|main|luci/luci-app-store luci/luci-lib-taskd luci/luci-lib-xterm luci/taskd"
+                "linkease/nas-packages-luci|https://github.com/linkease/nas-packages-luci.git|main|luci/luci-app-istorex luci/luci-app-quickstart"
+                "linkease/nas-packages|https://github.com/linkease/nas-packages.git|master|network/services/quickstart"
+                "nikkinikki-org/OpenWrt-nikki|https://github.com/nikkinikki-org/OpenWrt-nikki.git|main|nikki luci-app-nikki mihomo-meta"
+                "nikkinikki-org/OpenWrt-momo|https://github.com/nikkinikki-org/OpenWrt-momo.git|main|momo luci-app-momo"
+            )
+            ;;
+        *)
+            base_custom_feed_packages=(
+                xray-core xray-plugin dns2tcp dns2socks haproxy hysteria
+                naiveproxy shadowsocks-rust sing-box v2ray-core v2ray-geodata geoview v2ray-plugin
+                tuic-client chinadns-ng ipt2socks tcping trojan-plus simple-obfs shadowsocksr-libev
+                v2dat adguardhome luci-app-adguardhome ddns-go
+                luci-app-ddns-go taskd luci-lib-xterm luci-lib-taskd luci-app-store quickstart
+                luci-app-quickstart luci-app-istorex luci-app-cloudflarespeedtest netdata luci-app-netdata
+                lucky luci-app-lucky luci-app-openclash luci-app-homeproxy luci-app-amlogic
+                oaf open-app-filter luci-app-oaf easytier luci-app-easytier
+                msd_lite luci-app-msd_lite
+            )
+            required_feed_dirs=(
+                tcping v2ray-geodata luci-lib-taskd luci-app-openclash
+                luci-app-quickstart luci-app-store luci-app-homeproxy luci-app-mosdns
+                luci-app-passwall nikki luci-app-nikki mihomo-meta
+                momo luci-app-momo luci-app-netspeedtest speedtest-cli
+                open-app-filter luci-app-oaf lucky luci-app-lucky luci-app-easytier
+            )
+            if [ ! -d "$fullconenat_nft_dir" ]; then
+                base_custom_feed_packages+=(fullconenat-nft)
+            fi
+            if [ ! -d "$fullconenat_dir" ]; then
+                base_custom_feed_packages+=(fullconenat)
+            fi
+            custom_feed_sources=(
+                "kenzok8/small-package|https://github.com/kenzok8/small-package.git||${base_custom_feed_packages[*]}"
+                "sbwml/luci-app-mosdns|https://github.com/sbwml/luci-app-mosdns.git|v5|mosdns luci-app-mosdns"
+                "Openwrt-Passwall/openwrt-passwall|https://github.com/Openwrt-Passwall/openwrt-passwall.git|main|luci-app-passwall"
+                "nikkinikki-org/OpenWrt-nikki|https://github.com/nikkinikki-org/OpenWrt-nikki.git|main|nikki luci-app-nikki mihomo-meta"
+                "nikkinikki-org/OpenWrt-momo|https://github.com/nikkinikki-org/OpenWrt-momo.git|main|momo luci-app-momo"
+                "sbwml/openwrt_pkgs|https://github.com/sbwml/openwrt_pkgs.git|main|luci-app-netspeedtest speedtest-cli"
+            )
+            ;;
+    esac
 
     feeds_path=$(get_feeds_path)
     custom_feed_name=$(get_custom_feed_name)
@@ -236,6 +266,12 @@ install_custom_feed() {
 }
 
 verify_custom_feed_installed_paths() {
+    case "$BUILD_MODEL" in
+        r76s_immwrt|x64_immwrt)
+            return 0
+            ;;
+    esac
+
     local custom_feed_name
     local custom_feed_package_dir
     local required_package_dirs=(

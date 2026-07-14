@@ -14,6 +14,7 @@ REPO_URL=$1
 REPO_BRANCH=$2
 BUILD_DIR=$3
 COMMIT_HASH=$4
+BUILD_MODEL=$5
 
 # Convert BUILD_DIR to absolute path
 if [[ "$BUILD_DIR" != /* ]]; then
@@ -45,6 +46,7 @@ main() {
     remove_unwanted_packages
     remove_tweaked_packages
     install_custom_feed
+    setup_sbwml_fullcone
     update_homeproxy
     fix_default_set
     fix_miniupnpd

@@ -100,6 +100,36 @@ update_affinity_script() {
     fi
 }
 
+setup_sbwml_fullcone() {
+    case "$BUILD_MODEL" in
+        r76s_immwrt|x64_immwrt) ;;
+        *) return 0 ;;
+    esac
+
+    local base_url="https://raw.githubusercontent.com/sbwml/r4s_build_script/master/openwrt/patch/firewall4"
+    local fw4_patch="$BUILD_DIR/package/network/config/firewall4/patches/999-01-firewall4-add-fullcone-support.patch"
+    local libnftnl_patch="$BUILD_DIR/package/libs/libnftnl/patches/0001-libnftnl-add-fullcone-expression-support.patch"
+    local nftables_patch="$BUILD_DIR/package/network/utils/nftables/patches/0001-nftables-add-fullcone-expression-support.patch"
+    local luci_patch="/tmp/0001-luci-app-firewall-add-nft-fullcone.patch"
+
+    mkdir -p "$(dirname "$fw4_patch")" "$(dirname "$libnftnl_patch")" "$(dirname "$nftables_patch")"
+    curl_retry -fsSL -o "$fw4_patch" "$base_url/firewall4_patches/999-01-firewall4-add-fullcone-support.patch"
+    curl_retry -fsSL -o "$libnftnl_patch" "$base_url/libnftnl/0001-libnftnl-add-fullcone-expression-support.patch"
+    curl_retry -fsSL -o "$nftables_patch" "$base_url/nftables/0001-nftables-add-fullcone-expression-support.patch"
+
+    if ! grep -q '^PKG_FIXUP:=autoreconf$' "$BUILD_DIR/package/libs/libnftnl/Makefile"; then
+        sed -i '/^PKG_BUILD_FLAGS[[:space:]]*:/aPKG_FIXUP:=autoreconf' "$BUILD_DIR/package/libs/libnftnl/Makefile"
+    fi
+
+    rm -rf "$BUILD_DIR/package/new/nft-fullcone"
+    mkdir -p "$BUILD_DIR/package/new"
+    git_retry clone --depth 1 https://github.com/sbwml/nft-fullcone.git "$BUILD_DIR/package/new/nft-fullcone"
+
+    curl_retry -fsSL -o "$luci_patch" "$base_url/luci-25.12/0001-luci-app-firewall-add-nft-fullcone-and-bcm-fullcone-.patch"
+    (cd "$BUILD_DIR/feeds/luci" && patch -p1 < "$luci_patch")
+    sed -i "/o.value('2', _(\"Broadcom Fullcone nat\")/d" "$BUILD_DIR/feeds/luci/applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js"
+}
+
 fix_hash_value() {
     local makefile_path="$1"
     local old_hash="$2"
