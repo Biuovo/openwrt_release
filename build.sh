@@ -188,6 +188,18 @@ apply_config() {
     cat "$BASE_PATH/deconfig/docker_deps.config" >> "$BASE_PATH/../$BUILD_DIR/.config"
 
     cat "$BASE_PATH/deconfig/proxy.config" >> "$BASE_PATH/../$BUILD_DIR/.config"
+
+    if [[ "$Dev" == "r76s_immwrt" || "$Dev" == "x64_immwrt" ]]; then
+        printf '%s\n' \
+            'CONFIG_PACKAGE_luci-app-istorex=n' \
+            'CONFIG_PACKAGE_luci-app-store=n' \
+            'CONFIG_PACKAGE_luci-app-quickstart=n' \
+            'CONFIG_PACKAGE_quickstart=n' \
+            'CONFIG_PACKAGE_taskd=n' \
+            'CONFIG_PACKAGE_luci-lib-taskd=n' \
+            'CONFIG_PACKAGE_luci-lib-xterm=n' \
+            >> "$BASE_PATH/../$BUILD_DIR/.config"
+    fi
 }
 
 # 替换 banner
