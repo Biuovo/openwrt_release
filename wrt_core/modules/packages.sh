@@ -159,6 +159,7 @@ install_custom_feed() {
         luci-app-quickstart luci-app-store luci-app-homeproxy luci-app-mosdns
         luci-app-passwall nikki luci-app-nikki mihomo-meta
         momo luci-app-momo
+        luci-app-netspeedtest speedtest-cli
         open-app-filter luci-app-oaf lucky luci-app-lucky luci-app-easytier
     )
     local custom_feed_sources=()
@@ -183,6 +184,7 @@ install_custom_feed() {
         "Openwrt-Passwall/openwrt-passwall|https://github.com/Openwrt-Passwall/openwrt-passwall.git|main|luci-app-passwall"
         "nikkinikki-org/OpenWrt-nikki|https://github.com/nikkinikki-org/OpenWrt-nikki.git|main|nikki luci-app-nikki mihomo-meta"
         "nikkinikki-org/OpenWrt-momo|https://github.com/nikkinikki-org/OpenWrt-momo.git|main|momo luci-app-momo"
+        "sbwml/openwrt_pkgs|https://github.com/sbwml/openwrt_pkgs.git|main|luci-app-netspeedtest speedtest-cli"
     )
 
     feeds_path=$(get_feeds_path)
