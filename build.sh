@@ -236,6 +236,13 @@ if [[ "$Dev" == "jdcloud_ipq60xx_immwrt" || "$Dev" == "r76s_immwrt" ]]; then
         > "$BASE_PATH/../$BUILD_DIR/package/base-files/files/etc/sysctl.d/99-bbr-fq.conf"
 fi
 
+if [[ "$Dev" == "r76s_immwrt" ]]; then
+    LED_MENU="$BASE_PATH/../$BUILD_DIR/feeds/luci/modules/luci-mod-system/root/usr/share/luci/menu.d/luci-mod-system.json"
+    if [[ -f "$LED_MENU" ]]; then
+        python3 -c 'import json,sys; p=sys.argv[1]; d=json.load(open(p)); d.pop("admin/system/leds", None); open(p,"w").write(json.dumps(d, ensure_ascii=False, indent="\t")+"\n")' "$LED_MENU"
+    fi
+fi
+
 apply_config
 remove_uhttpd_dependency
 replace_banner
