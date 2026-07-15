@@ -111,11 +111,12 @@ _docker_stack_update_dockerd_depends_block() {
             in_depends = 0
             replaced = 0
         }
-        /^  DEPENDS:=\$\(ARCH_DEPENDS\) \\$/ {
+        /^  DEPENDS:=\$\((ARCH_DEPENDS|GO_ARCH_DEPENDS)\) \\$/ {
             in_depends = 1
             replaced = 1
 
-            print "  DEPENDS:=$(ARCH_DEPENDS) \\" 
+            dep_var = ($0 ~ /GO_ARCH_DEPENDS/) ? "GO_ARCH_DEPENDS" : "ARCH_DEPENDS"
+            print "  DEPENDS:=$(" dep_var ") \\" 
             print "    +ca-certificates \\" 
             print "    +containerd \\" 
             print "    +fuse-overlayfs \\"
