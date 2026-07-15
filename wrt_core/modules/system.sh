@@ -123,7 +123,7 @@ setup_sbwml_fullcone() {
 
     rm -rf "$BUILD_DIR/package/new/nft-fullcone"
     mkdir -p "$BUILD_DIR/package/new"
-    git_retry clone --depth 1 https://github.com/sbwml/nft-fullcone.git "$BUILD_DIR/package/new/nft-fullcone"
+    git_retry clone --depth 1 https://git.cooluc.com/sbwml/nft-fullcone.git "$BUILD_DIR/package/new/nft-fullcone"
 
     curl_retry -fsSL -o "$luci_patch" "$base_url/luci-25.12/0001-luci-app-firewall-add-nft-fullcone-and-bcm-fullcone-.patch"
     (cd "$BUILD_DIR/feeds/luci" && patch -p1 < "$luci_patch")

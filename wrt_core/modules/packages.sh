@@ -168,10 +168,12 @@ install_custom_feed() {
         r76s_immwrt|x64_immwrt)
             required_feed_dirs=(
                 luci-app-adguardhome luci-app-netspeedtest speedtest-cli
+                luci-app-store luci-lib-taskd luci-lib-xterm taskd
                 nikki luci-app-nikki mihomo-meta momo luci-app-momo
             )
             custom_feed_sources=(
                 "sbwml/openwrt_pkgs|https://github.com/sbwml/openwrt_pkgs.git|main|luci-app-adguardhome luci-app-netspeedtest speedtest-cli"
+                "linkease/istore|https://github.com/linkease/istore.git|main|luci/luci-app-store luci/luci-lib-taskd luci/luci-lib-xterm luci/taskd"
                 "nikkinikki-org/OpenWrt-nikki|https://github.com/nikkinikki-org/OpenWrt-nikki.git|main|nikki luci-app-nikki mihomo-meta"
                 "nikkinikki-org/OpenWrt-momo|https://github.com/nikkinikki-org/OpenWrt-momo.git|main|momo luci-app-momo"
             )

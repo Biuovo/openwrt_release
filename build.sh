@@ -192,12 +192,12 @@ apply_config() {
     if [[ "$Dev" == "r76s_immwrt" || "$Dev" == "x64_immwrt" ]]; then
         printf '%s\n' \
             'CONFIG_PACKAGE_luci-app-istorex=n' \
-            'CONFIG_PACKAGE_luci-app-store=n' \
+            'CONFIG_PACKAGE_luci-app-store=y' \
             'CONFIG_PACKAGE_luci-app-quickstart=n' \
             'CONFIG_PACKAGE_quickstart=n' \
-            'CONFIG_PACKAGE_taskd=n' \
-            'CONFIG_PACKAGE_luci-lib-taskd=n' \
-            'CONFIG_PACKAGE_luci-lib-xterm=n' \
+            'CONFIG_PACKAGE_taskd=y' \
+            'CONFIG_PACKAGE_luci-lib-taskd=y' \
+            'CONFIG_PACKAGE_luci-lib-xterm=y' \
             >> "$BASE_PATH/../$BUILD_DIR/.config"
     fi
 }
