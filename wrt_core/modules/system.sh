@@ -111,6 +111,8 @@ setup_sbwml_fullcone() {
     local libnftnl_patch="$BUILD_DIR/package/libs/libnftnl/patches/0001-libnftnl-add-fullcone-expression-support.patch"
     local nftables_patch="$BUILD_DIR/package/network/utils/nftables/patches/0001-nftables-add-fullcone-expression-support.patch"
     local luci_patch="/tmp/0001-luci-app-firewall-add-nft-fullcone.patch"
+    local luci6_patch="/tmp/0007-luci-app-firewall-add-fullcone6.patch"
+    local luci_features="$BUILD_DIR/feeds/luci/modules/luci-base/root/usr/share/rpcd/ucode/luci"
 
     mkdir -p "$(dirname "$fw4_patch")" "$(dirname "$libnftnl_patch")" "$(dirname "$nftables_patch")"
     curl_retry -fsSL -o "$fw4_patch" "$base_url/firewall4_patches/999-01-firewall4-add-fullcone-support.patch"
@@ -127,8 +129,13 @@ setup_sbwml_fullcone() {
     sed -i 's/ +kmod-nf-conntrack6//g' "$BUILD_DIR/package/new/nft-fullcone/Makefile"
 
     curl_retry -fsSL -o "$luci_patch" "$base_url/luci-25.12/0001-luci-app-firewall-add-nft-fullcone-and-bcm-fullcone-.patch"
-    (cd "$BUILD_DIR/feeds/luci" && patch -p1 < "$luci_patch")
+    curl_retry -fsSL -o "$luci6_patch" "$base_url/luci-25.12/0007-luci-app-firewall-add-fullcone6-option-for-nftables-.patch"
+    (cd "$BUILD_DIR/feeds/luci" && patch -p1 < "$luci_patch" && patch -p1 < "$luci6_patch")
     sed -i "/o.value('2', _(\"Broadcom Fullcone nat\")/d" "$BUILD_DIR/feeds/luci/applications/luci-app-firewall/htdocs/luci-static/resources/view/firewall/zones.js"
+
+    if [ -f "$luci_features" ] && ! grep -q '^[[:space:]]*fullcone:' "$luci_features"; then
+        sed -i "/firewall4:/a\\\t\t\t\tfullcone:   access('\/sys\/module\/nft_fullcone') == true," "$luci_features"
+    fi
 }
 
 fix_hash_value() {
