@@ -81,7 +81,10 @@ main() {
     fix_rust_compile_error
     update_smartdns
     update_diskman
-    update_dockerman
+    case "$BUILD_MODEL" in
+        r76s_immwrt|x64_immwrt) ;;
+        *) update_dockerman ;;
+    esac
     set_nginx_default_config
     update_uwsgi_limit_as
     update_argon
@@ -96,7 +99,10 @@ main() {
     fix_kconfig_recursive_dependency
     install_feeds
     verify_custom_feed_installed_paths
-    docker_stack_sync_nftables_compat "$BUILD_DIR" "0"
+    case "$BUILD_MODEL" in
+        r76s_immwrt|x64_immwrt) ;;
+        *) docker_stack_sync_nftables_compat "$BUILD_DIR" "0" ;;
+    esac
     fix_easytier_lua
     update_adguardhome
     update_script_priority
