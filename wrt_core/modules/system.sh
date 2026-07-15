@@ -100,6 +100,38 @@ update_affinity_script() {
     fi
 }
 
+setup_release_6_18() {
+    case "$BUILD_MODEL" in
+        r76s_immwrt|x64_immwrt) ;;
+        *) return 0 ;;
+    esac
+    [ "$REPO_BRANCH" = "v25.12.5" ] || return 0
+
+    local master_tree="/tmp/openwrt-master-6.18"
+    rm -rf "$master_tree"
+    git_retry clone --depth 1 --filter=blob:none --sparse https://github.com/openwrt/openwrt.git "$master_tree"
+    git_retry -C "$master_tree" sparse-checkout set target/linux/generic package/kernel
+
+    rm -rf "$BUILD_DIR/target/linux/generic" "$BUILD_DIR/package/kernel"
+    cp -a "$master_tree/target/linux/generic" "$BUILD_DIR/target/linux/generic"
+    cp -a "$master_tree/package/kernel" "$BUILD_DIR/package/kernel"
+
+    case "$BUILD_MODEL" in
+        r76s_immwrt)
+            git_retry -C "$master_tree" sparse-checkout add target/linux/rockchip
+            rm -rf "$BUILD_DIR/target/linux/rockchip"
+            cp -a "$master_tree/target/linux/rockchip" "$BUILD_DIR/target/linux/rockchip"
+            ;;
+        x64_immwrt)
+            git_retry -C "$master_tree" sparse-checkout add target/linux/x86
+            rm -rf "$BUILD_DIR/target/linux/x86"
+            cp -a "$master_tree/target/linux/x86" "$BUILD_DIR/target/linux/x86"
+            ;;
+    esac
+
+    rm -rf "$master_tree"
+}
+
 setup_sbwml_fullcone() {
     case "$BUILD_MODEL" in
         r76s_immwrt|x64_immwrt) ;;

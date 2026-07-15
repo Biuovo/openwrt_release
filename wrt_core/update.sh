@@ -42,6 +42,7 @@ main() {
     clone_repo
     clean_up
     reset_feeds_conf
+    setup_release_6_18
     update_feeds
     remove_unwanted_packages
     remove_tweaked_packages

@@ -34,9 +34,13 @@ clean_up() {
 }
 
 reset_feeds_conf() {
-    git_retry reset --hard "origin/$REPO_BRANCH"
+    if git rev-parse -q --verify "refs/tags/$REPO_BRANCH" >/dev/null; then
+        git_retry reset --hard "$REPO_BRANCH"
+    else
+        git_retry reset --hard "origin/$REPO_BRANCH"
+        git_retry pull
+    fi
     git_retry clean -f -d
-    git_retry pull
     if [[ $COMMIT_HASH != "none" ]]; then
         git_retry checkout "$COMMIT_HASH"
     fi
