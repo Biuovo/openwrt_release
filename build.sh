@@ -179,6 +179,7 @@ apply_config() {
     \cp -f "$CONFIG_FILE" "$BASE_PATH/../$BUILD_DIR/.config"
     
     if grep -qE "(ipq60xx|ipq807x)" "$BASE_PATH/../$BUILD_DIR/.config" &&
+        [[ "$Dev" != "jdcloud_ipq60xx_lede" ]] &&
         ! grep -q "CONFIG_GIT_MIRROR" "$BASE_PATH/../$BUILD_DIR/.config"; then
         cat "$BASE_PATH/deconfig/nss.config" >> "$BASE_PATH/../$BUILD_DIR/.config"
     fi
@@ -189,7 +190,7 @@ apply_config() {
 
     cat "$BASE_PATH/deconfig/proxy.config" >> "$BASE_PATH/../$BUILD_DIR/.config"
 
-    if [[ "$Dev" == "jdcloud_ipq60xx_libwrt" || "$Dev" == "r76s_immwrt" || "$Dev" == "x64_immwrt" ]]; then
+    if [[ "$Dev" == "jdcloud_ipq60xx_libwrt" || "$Dev" == "jdcloud_ipq60xx_lede" || "$Dev" == "r76s_immwrt" || "$Dev" == "r76s_lede" || "$Dev" == "x64_immwrt" ]]; then
         printf '%s\n' \
             'CONFIG_PACKAGE_luci-app-istorex=n' \
             'CONFIG_PACKAGE_luci-app-store=y' \

@@ -34,6 +34,7 @@ sudo bash -c 'bash <(curl -sL https://build-scripts.immortalwrt.org/init_build_e
 *   **雅典娜(02)、亚瑟(01)、太乙(07)、AX5(JDC版)**:
     ```bash
     ./build.sh jdcloud_ipq60xx_libwrt
+    ./build.sh jdcloud_ipq60xx_lede
     ./build.sh jdcloud_ipq60xx_immwrt
     ```
 *   **百里**:
@@ -43,6 +44,12 @@ sudo bash -c 'bash <(curl -sL https://build-scripts.immortalwrt.org/init_build_e
 
 
 ### 其他
+
+*   **NanoPi R76S**:
+    ```bash
+    ./build.sh r76s_immwrt
+    ./build.sh r76s_lede
+    ```
 
 *   **X64**:
     ```bash
