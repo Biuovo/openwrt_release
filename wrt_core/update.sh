@@ -119,4 +119,37 @@ main() {
     # apply_hash_fixes
 }
 
-main "$@"
+main_lede_append_feed() {
+    local feeds_path="$1"
+    local feed_name="$2"
+    local feed_entry="$3"
+
+    sed -i "/[[:space:]]${feed_name}[[:space:]]/d" "$feeds_path"
+    [ -z "$(tail -c 1 "$feeds_path")" ] || echo "" >>"$feeds_path"
+    echo "$feed_entry" >>"$feeds_path"
+}
+
+main_lede() {
+    local feeds_path
+
+    clone_repo
+    clean_up
+    reset_feeds_conf
+
+    feeds_path=$(get_feeds_path)
+    main_lede_append_feed "$feeds_path" "nikki" "src-git nikki https://github.com/nikkinikki-org/OpenWrt-nikki.git;main"
+    main_lede_append_feed "$feeds_path" "momo" "src-git momo https://github.com/nikkinikki-org/OpenWrt-momo.git;main"
+    main_lede_append_feed "$feeds_path" "tailscale_community" "src-git tailscale_community https://github.com/tokisaki-galaxy/luci-app-tailscale-community.git;master"
+
+    network_retry ./scripts/feeds update -a
+    ./scripts/feeds install -a -f
+}
+
+case "$BUILD_MODEL" in
+    jdcloud_ipq60xx_lede|r76s_lede)
+        main_lede "$@"
+        ;;
+    *)
+        main "$@"
+        ;;
+esac
