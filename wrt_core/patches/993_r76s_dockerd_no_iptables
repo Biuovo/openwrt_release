@@ -1,0 +1,11 @@
+#!/bin/sh
+
+# R76S runs fw4/nftables. Let dockerd avoid iptables/ip6tables rule management
+# so the daemon can start reliably and Dockerman can connect to docker.sock.
+uci -q set dockerd.globals.iptables='0'
+uci -q set dockerd.globals.ip6tables='0'
+uci -q commit dockerd
+
+[ -x /etc/init.d/dockerd ] && /etc/init.d/dockerd enable
+
+exit 0

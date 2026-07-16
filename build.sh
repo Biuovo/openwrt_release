@@ -235,6 +235,20 @@ replace_banner() {
     fi
 }
 
+apply_r76s_dockerd_defaults() {
+    local defaults_source="$BASE_PATH/patches/993_r76s_dockerd_no_iptables"
+    local defaults_target="$BASE_PATH/../$BUILD_DIR/package/base-files/files/etc/uci-defaults/993_r76s_dockerd_no_iptables"
+
+    case "$Dev" in
+        r76s_immwrt|r76s_lede)
+            if [[ -f "$defaults_source" ]]; then
+                install -Dm755 "$defaults_source" "$defaults_target"
+                echo "Applied R76S dockerd no-iptables defaults."
+            fi
+            ;;
+    esac
+}
+
 REPO_URL=$(read_ini_by_key "REPO_URL")
 REPO_BRANCH=$(read_ini_by_key "REPO_BRANCH")
 REPO_BRANCH=${REPO_BRANCH:-main}
@@ -264,6 +278,7 @@ if [[ "$Dev" == "r76s_immwrt" ]]; then
 fi
 
 apply_config
+apply_r76s_dockerd_defaults
 
 case "$Dev" in
     jdcloud_ipq60xx_lede|r76s_lede) ;;
