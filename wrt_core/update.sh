@@ -140,6 +140,7 @@ main_lede() {
     main_lede_append_feed "$feeds_path" "nikki" "src-git nikki https://github.com/nikkinikki-org/OpenWrt-nikki.git;main"
     main_lede_append_feed "$feeds_path" "momo" "src-git momo https://github.com/nikkinikki-org/OpenWrt-momo.git;main"
     main_lede_append_feed "$feeds_path" "tailscale_community" "src-git tailscale_community https://github.com/tokisaki-galaxy/luci-app-tailscale-community.git;master"
+    main_lede_append_feed "$feeds_path" "openlist2" "src-git openlist2 https://github.com/sbwml/luci-app-openlist2.git;main"
 
     network_retry ./scripts/feeds update -a
     ./scripts/feeds install -a -f
