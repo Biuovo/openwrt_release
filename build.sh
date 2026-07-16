@@ -189,7 +189,7 @@ apply_config() {
 
     cat "$BASE_PATH/deconfig/proxy.config" >> "$BASE_PATH/../$BUILD_DIR/.config"
 
-    if [[ "$Dev" == "r76s_immwrt" || "$Dev" == "x64_immwrt" ]]; then
+    if [[ "$Dev" == "jdcloud_ipq60xx_libwrt" || "$Dev" == "r76s_immwrt" || "$Dev" == "x64_immwrt" ]]; then
         printf '%s\n' \
             'CONFIG_PACKAGE_luci-app-istorex=n' \
             'CONFIG_PACKAGE_luci-app-store=y' \
@@ -240,7 +240,7 @@ fi
 
 "$BASE_PATH/update.sh" "$REPO_URL" "$REPO_BRANCH" "$BUILD_DIR" "$COMMIT_HASH" "$Dev"
 
-if [[ "$Dev" == "jdcloud_ipq60xx_immwrt" || "$Dev" == "r76s_immwrt" ]]; then
+if [[ "$Dev" == "jdcloud_ipq60xx_immwrt" || "$Dev" == "jdcloud_ipq60xx_libwrt" || "$Dev" == "r76s_immwrt" ]]; then
     mkdir -p "$BASE_PATH/../$BUILD_DIR/package/base-files/files/etc/sysctl.d"
     printf '%s\n' \
         'net.ipv4.tcp_congestion_control=bbr' \

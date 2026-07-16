@@ -33,8 +33,8 @@ sudo bash -c 'bash <(curl -sL https://build-scripts.immortalwrt.org/init_build_e
 
 *   **雅典娜(02)、亚瑟(01)、太乙(07)、AX5(JDC版)**:
     ```bash
-    ./build.sh jdcloud_ipq60xx_immwrt
     ./build.sh jdcloud_ipq60xx_libwrt
+    ./build.sh jdcloud_ipq60xx_immwrt
     ```
 *   **百里**:
     ```bash
