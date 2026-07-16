@@ -104,7 +104,10 @@ main() {
         *) docker_stack_sync_nftables_compat "$BUILD_DIR" "0" ;;
     esac
     fix_easytier_lua
-    update_adguardhome
+    case "$BUILD_MODEL" in
+        r76s_immwrt|r76s_lede) ;;
+        *) update_adguardhome ;;
+    esac
     update_script_priority
     update_geoip
     fix_openssl_ktls
