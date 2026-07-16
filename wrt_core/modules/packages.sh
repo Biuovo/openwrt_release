@@ -270,18 +270,39 @@ verify_custom_feed_installed_paths() {
     esac
 
     local custom_feed_name
-    local custom_feed_package_dir
     local required_package_dirs=(
         luci-app-adguardhome luci-app-mosdns v2ray-geodata luci-app-easytier
         luci-app-passwall nikki luci-app-nikki mihomo-meta
         momo luci-app-momo
     )
+    local installed_feed_roots=(
+        "$BUILD_DIR/package/feeds/custom_feed"
+        "$BUILD_DIR/package/feeds/packages"
+        "$BUILD_DIR/package/feeds/luci"
+        "$BUILD_DIR/package/feeds/routing"
+        "$BUILD_DIR/package/feeds/telephony"
+        "$BUILD_DIR/package/custom"
+    )
     local missing_package_dirs=()
+    local pkg
+    local root
+    local found
 
     custom_feed_name=$(get_custom_feed_name)
-    custom_feed_package_dir=$(get_custom_feed_package_dir)
 
-    collect_missing_directories "$custom_feed_package_dir" required_package_dirs missing_package_dirs
+    for pkg in "${required_package_dirs[@]}"; do
+        found=0
+        for root in "${installed_feed_roots[@]}"; do
+            if [ -d "$root/$pkg" ]; then
+                found=1
+                break
+            fi
+        done
+
+        if [ "$found" -eq 0 ]; then
+            missing_package_dirs+=("$pkg")
+        fi
+    done
 
     if [ ${#missing_package_dirs[@]} -ne 0 ]; then
         printf '错误：%s 安装后缺少以下仓库依赖路径：\n' "$custom_feed_name" >&2
