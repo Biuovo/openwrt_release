@@ -82,7 +82,7 @@ main() {
     update_smartdns
     update_diskman
     case "$BUILD_MODEL" in
-        r76s_immwrt|x64_immwrt) ;;
+        jdcloud_ipq60xx_lede|r76s_immwrt|r76s_lede|x64_immwrt) ;;
         *) update_dockerman ;;
     esac
     set_nginx_default_config
@@ -100,7 +100,7 @@ main() {
     install_feeds
     verify_custom_feed_installed_paths
     case "$BUILD_MODEL" in
-        r76s_immwrt|x64_immwrt) ;;
+        jdcloud_ipq60xx_lede|r76s_immwrt|r76s_lede|x64_immwrt) ;;
         *) docker_stack_sync_nftables_compat "$BUILD_DIR" "0" ;;
     esac
     fix_easytier_lua
