@@ -215,6 +215,7 @@ install_custom_feed() {
                 luci-app-quickstart luci-app-store luci-app-homeproxy luci-app-mosdns
                 luci-app-passwall nikki luci-app-nikki mihomo-meta
                 momo luci-app-momo luci-app-netspeedtest speedtest-cli
+                openlist2 luci-app-openlist2
                 open-app-filter luci-app-oaf lucky luci-app-lucky luci-app-easytier
             )
             if [ ! -d "$fullconenat_nft_dir" ]; then
@@ -229,6 +230,7 @@ install_custom_feed() {
                 "Openwrt-Passwall/openwrt-passwall|https://github.com/Openwrt-Passwall/openwrt-passwall.git|main|luci-app-passwall"
                 "nikkinikki-org/OpenWrt-nikki|https://github.com/nikkinikki-org/OpenWrt-nikki.git|main|nikki luci-app-nikki mihomo-meta"
                 "nikkinikki-org/OpenWrt-momo|https://github.com/nikkinikki-org/OpenWrt-momo.git|main|momo luci-app-momo"
+                "sbwml/luci-app-openlist2|https://github.com/sbwml/luci-app-openlist2.git|main|openlist2 luci-app-openlist2"
                 "sbwml/openwrt_pkgs|https://github.com/sbwml/openwrt_pkgs.git|main|luci-app-netspeedtest speedtest-cli"
             )
             ;;
