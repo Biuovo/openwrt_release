@@ -236,15 +236,29 @@ replace_banner() {
 }
 
 apply_r76s_dockerd_defaults() {
-    local defaults_source="$BASE_PATH/patches/993_r76s_dockerd_no_iptables"
-    local defaults_target="$BASE_PATH/../$BUILD_DIR/package/base-files/files/etc/uci-defaults/993_r76s_dockerd_no_iptables"
+    local dockerd_source="$BASE_PATH/patches/993_r76s_dockerd_no_iptables"
+    local fq_source="$BASE_PATH/patches/994_r76s_default_fq"
+    local defaults_dir="$BASE_PATH/../$BUILD_DIR/package/base-files/files/etc/uci-defaults"
 
     case "$Dev" in
         r76s_immwrt|r76s_lede)
-            if [[ -f "$defaults_source" ]]; then
-                install -Dm755 "$defaults_source" "$defaults_target"
+            if [[ -f "$dockerd_source" ]]; then
+                install -Dm755 "$dockerd_source" "$defaults_dir/993_r76s_dockerd_no_iptables"
                 echo "Applied R76S dockerd no-iptables defaults."
             fi
+            if [[ -f "$fq_source" ]]; then
+                install -Dm755 "$fq_source" "$defaults_dir/994_r76s_default_fq"
+                echo "Applied R76S fq defaults."
+            fi
+            ;;
+    esac
+}
+
+sanitize_lede_runtime_feeds() {
+    case "$Dev" in
+        jdcloud_ipq60xx_lede|r76s_lede)
+            find "$BASE_PATH/../$BUILD_DIR" -type f \( -name '99-distfeeds.conf' -o -name 'distfeeds.conf' \) -exec sed -i \
+                '/\/(momo\|nikki\|openlist2\|tailscale_community)\//d' {} + 2>/dev/null || true
             ;;
     esac
 }
@@ -261,6 +275,7 @@ if [[ -d action_build ]]; then
 fi
 
 "$BASE_PATH/update.sh" "$REPO_URL" "$REPO_BRANCH" "$BUILD_DIR" "$COMMIT_HASH" "$Dev"
+sanitize_lede_runtime_feeds
 
 if [[ "$Dev" == "jdcloud_ipq60xx_immwrt" || "$Dev" == "jdcloud_ipq60xx_libwrt" || "$Dev" == "r76s_immwrt" ]]; then
     mkdir -p "$BASE_PATH/../$BUILD_DIR/package/base-files/files/etc/sysctl.d"

@@ -131,6 +131,7 @@ main_lede_append_feed() {
 
 main_lede() {
     local feeds_path
+    local distfeeds_path
 
     clone_repo
     clean_up
@@ -144,6 +145,12 @@ main_lede() {
 
     network_retry ./scripts/feeds update -a
     ./scripts/feeds install -a -f
+
+    # These feeds are build-time sources only; do not publish invalid runtime URLs.
+    distfeeds_path="$BUILD_DIR/package/emortal/default-settings/files/99-distfeeds.conf"
+    if [ -f "$distfeeds_path" ]; then
+        sed -i '/nikki\|momo\|tailscale_community\|openlist2/d' "$distfeeds_path"
+    fi
 }
 
 case "$BUILD_MODEL" in

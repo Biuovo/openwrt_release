@@ -1,0 +1,16 @@
+#!/bin/sh
+
+# Prefer fq over fq_codel for R76S.
+[ -d /etc/sysctl.d ] || mkdir -p /etc/sysctl.d
+echo 'net.core.default_qdisc=fq' > /etc/sysctl.d/99-fq.conf
+
+if [ -f /etc/modules.d/sched ]; then
+    grep -q '^sch_fq$' /etc/modules.d/sched || echo sch_fq >> /etc/modules.d/sched
+else
+    echo sch_fq > /etc/modules.d/30-sch-fq
+fi
+
+modprobe sch_fq 2>/dev/null || true
+sysctl -w net.core.default_qdisc=fq 2>/dev/null || true
+
+exit 0
