@@ -126,6 +126,41 @@ setup_release_6_18() {
             git_retry -C "$master_tree" sparse-checkout add target/linux/x86
             rm -rf "$BUILD_DIR/target/linux/x86"
             cp -a "$master_tree/target/linux/x86" "$BUILD_DIR/target/linux/x86"
+
+            # Keep Linux 6.18 x86_64 kernel config non-interactive.
+            local x86_64_config="$BUILD_DIR/target/linux/x86/64/config-6.18"
+            if [ -f "$x86_64_config" ]; then
+                sed -i \
+                    -e '/^CONFIG_NR_CPUS=/d' \
+                    -e '/^CONFIG_NR_CPUS_DEFAULT=/d' \
+                    -e '/^CONFIG_NR_CPUS_RANGE_BEGIN=/d' \
+                    -e '/^CONFIG_NR_CPUS_RANGE_END=/d' \
+                    -e '/^CONFIG_MAXSMP=/d' \
+                    -e '/^# CONFIG_MAXSMP is not set/d' \
+                    -e '/^CONFIG_X86_POSTED_MSI=/d' \
+                    -e '/^# CONFIG_X86_POSTED_MSI is not set/d' \
+                    -e '/^CONFIG_X86_CPU_RESCTRL=/d' \
+                    -e '/^# CONFIG_X86_CPU_RESCTRL is not set/d' \
+                    -e '/^CONFIG_X86_FRED=/d' \
+                    -e '/^# CONFIG_X86_FRED is not set/d' \
+                    -e '/^CONFIG_X86_EXTENDED_PLATFORM=/d' \
+                    -e '/^# CONFIG_X86_EXTENDED_PLATFORM is not set/d' \
+                    -e '/^CONFIG_IOSF_MBI_DEBUG=/d' \
+                    -e '/^# CONFIG_IOSF_MBI_DEBUG is not set/d' \
+                    "$x86_64_config"
+                cat >> "$x86_64_config" <<'EOF'
+# CONFIG_MAXSMP is not set
+# CONFIG_X86_POSTED_MSI is not set
+# CONFIG_X86_CPU_RESCTRL is not set
+# CONFIG_X86_FRED is not set
+# CONFIG_X86_EXTENDED_PLATFORM is not set
+# CONFIG_IOSF_MBI_DEBUG is not set
+CONFIG_NR_CPUS=64
+CONFIG_NR_CPUS_DEFAULT=64
+CONFIG_NR_CPUS_RANGE_BEGIN=2
+CONFIG_NR_CPUS_RANGE_END=512
+EOF
+            fi
             ;;
     esac
 
