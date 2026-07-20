@@ -140,18 +140,24 @@ main_lede() {
     feeds_path=$(get_feeds_path)
     case "$BUILD_MODEL" in
         jdcloud_ipq60xx_lede)
+            "$BASE_PATH/patches/997_port_imm_full_nss.sh" "$BUILD_DIR"
             main_lede_append_feed "$feeds_path" "momo" "src-git momo https://github.com/nikkinikki-org/OpenWrt-momo.git;main"
+            main_lede_append_feed "$feeds_path" "openlist2" "src-git openlist2 https://github.com/sbwml/luci-app-openlist2.git;main"
+            main_lede_append_feed "$feeds_path" "netspeedtest" "src-git netspeedtest https://github.com/sbwml/openwrt_pkgs.git;main"
             ;;
         r76s_lede)
-            main_lede_append_feed "$feeds_path" "nikki" "src-git nikki https://github.com/nikkinikki-org/OpenWrt-nikki.git;main"
             main_lede_append_feed "$feeds_path" "momo" "src-git momo https://github.com/nikkinikki-org/OpenWrt-momo.git;main"
-            main_lede_append_feed "$feeds_path" "tailscale_community" "src-git tailscale_community https://github.com/tokisaki-galaxy/luci-app-tailscale-community.git;master"
             main_lede_append_feed "$feeds_path" "openlist2" "src-git openlist2 https://github.com/sbwml/luci-app-openlist2.git;main"
+            main_lede_append_feed "$feeds_path" "netspeedtest" "src-git netspeedtest https://github.com/sbwml/openwrt_pkgs.git;main"
             ;;
     esac
 
     network_retry ./scripts/feeds update -a
     ./scripts/feeds install -a -f
+
+    update_diskman
+    update_argon
+    update_argon_config
 
     # These feeds are build-time sources only; do not publish invalid runtime URLs.
     distfeeds_path="$BUILD_DIR/package/emortal/default-settings/files/99-distfeeds.conf"

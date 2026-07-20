@@ -441,11 +441,13 @@ add_backup_info_to_sysupgrade() {
     local conf_path="$BUILD_DIR/package/base-files/files/etc/sysupgrade.conf"
 
     if [ -f "$conf_path" ]; then
-        cat >"$conf_path" <<'EOF'
-/etc/AdGuardHome.yaml
-/etc/easytier
-/etc/lucky/
-EOF
+        touch "$conf_path"
+        for keep_path in \
+            /etc/AdGuardHome.yaml \
+            /etc/easytier \
+            /etc/lucky/; do
+            grep -qxF "$keep_path" "$conf_path" || echo "$keep_path" >>"$conf_path"
+        done
     fi
 }
 
