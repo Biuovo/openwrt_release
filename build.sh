@@ -238,9 +238,16 @@ replace_banner() {
 apply_r76s_dockerd_defaults() {
     local dockerd_source="$BASE_PATH/patches/993_r76s_dockerd_no_iptables"
     local fq_source="$BASE_PATH/patches/994_r76s_default_fq"
+    local er1_nss_source="$BASE_PATH/patches/995_er1_lede_nss_offload_defaults"
     local defaults_dir="$BASE_PATH/../$BUILD_DIR/package/base-files/files/etc/uci-defaults"
 
     case "$Dev" in
+        jdcloud_ipq60xx_lede)
+            if [[ -f "$er1_nss_source" ]]; then
+                install -Dm755 "$er1_nss_source" "$defaults_dir/995_er1_lede_nss_offload_defaults"
+                echo "Applied ER1 LEDE NSS/offload defaults."
+            fi
+            ;;
         r76s_immwrt|r76s_lede)
             if [[ -f "$dockerd_source" ]]; then
                 install -Dm755 "$dockerd_source" "$defaults_dir/993_r76s_dockerd_no_iptables"
