@@ -1,6 +1,5 @@
 #!/bin/sh
 
-IEEE_PATH="/sys/class/ieee80211"
 THERMAL_PATH="/sys/class/thermal"
 CPU_PATH="/sys/devices/system/cpu"
 
@@ -51,20 +50,8 @@ read_cpu_freq_info() {
 	fi
 }
 
-read_temp_info() {
-	local zone type temp label out cpu_temp wifi_temp device_temp
-
-	if grep -Eq "ipq40xx|ipq806x" "/etc/openwrt_release" 2>/dev/null; then
-		wifi_temp="$(awk '{printf("%.1f°C ", $0 / 1000)}' "$IEEE_PATH"/phy*/device/hwmon/hwmon*/temp1_input 2>"/dev/null" | awk '$1=$1')"
-	else
-		wifi_temp="$(cat "$IEEE_PATH"/phy*/hwmon*/temp1_input 2>"/dev/null" | awk '{printf("%.1f°C ", $0 / 1000)}' | awk '$1=$1')"
-	fi
-
-	if grep -q "ipq40xx" "/etc/openwrt_release" 2>/dev/null; then
-		if [ -e "$IEEE_PATH/phy0/hwmon0/temp1_input" ]; then
-			wifi_temp="$(awk -F ': ' '{print $2}' "$IEEE_PATH/phy0/hwmon0/temp1_input" 2>"/dev/null")°C"
-		fi
-	fi
+read_cpu_temp_info() {
+	local zone type temp cpu_temp
 
 	for zone in "$THERMAL_PATH"/thermal_zone*; do
 		[ -r "$zone/temp" ] || continue
@@ -73,15 +60,8 @@ read_temp_info() {
 		type=$(cat "$zone/type" 2>/dev/null)
 		case "$type" in
 			*cpu*|*CPU*|*package*|*soc*|*SOC*)
-				[ -n "$cpu_temp" ] || cpu_temp=$(fmt_temp "$temp")
-				;;
-		esac
-		case "$type" in
-			*board*|*BOARD*|*ddr*|*DDR*|*gpu*|*GPU*|*npu*|*NPU*|*soc*|*SOC*)
-				label=${type:-$(basename "$zone")}
-				label=$(echo "$label" | sed 's/-thermal$//; s/_thermal$//; s/thermal$//')
-				out="${label}: $(fmt_temp "$temp")"
-				device_temp="${device_temp:+$device_temp, }$out"
+				cpu_temp=$(fmt_temp "$temp")
+				break
 				;;
 		esac
 	done
@@ -91,13 +71,10 @@ read_temp_info() {
 		cpu_temp=$(fmt_temp "$(cat "$THERMAL_PATH/thermal_zone0/temp" 2>/dev/null)")
 	fi
 
-	[ -n "$cpu_temp" ] && out="CPU: $cpu_temp"
-	[ -n "$device_temp" ] && out="${out:+$out, }Device: $device_temp"
-	[ -n "$wifi_temp" ] && out="${out:+$out, }WiFi: $wifi_temp"
-	[ -n "$out" ] && echo -n "$out" || echo -n "No temperature info"
+	[ -n "$cpu_temp" ] && echo -n "CPU: $cpu_temp" || echo -n "No CPU temperature info"
 }
 
-temp_info=$(read_temp_info)
+temp_info=$(read_cpu_temp_info)
 freq_info=$(read_cpu_freq_info)
 
 if [ -n "$freq_info" ]; then
